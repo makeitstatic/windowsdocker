@@ -14,8 +14,8 @@ COPY Scripts\HelloWorld.java c:\\Scripts\HelloWorld.java
 
 # This is a script that installs chocolatey package manager without user prompt
 COPY Scripts\ChocolateyInstallNonAdmin.ps1 c:\\Scripts\ChocolateyInstallNonAdmin.ps1
-
-RUN powershell.exe
+# sets the default shell
+SHELL ["powershell"]
 
 # Install Chocolatey
 RUN Set-ExecutionPolicy Bypass -Scope Process -Force;
