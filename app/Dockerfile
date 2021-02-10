@@ -33,7 +33,7 @@ RUN choco install vscode
 RUN Powershell.exe -Command Install-WindowsFeature Web-Server
 
 # Install Jenkins, msi installation silent install syntax
-RUN ["c:/Jenkins/jenkins.msi", "/silent", "install"]
+RUN ["msiexec.exe", "/i", "C:\\Jenkins\\jenkins.msi", "/qn"]
 
 # Remove install files
 RUN Powershell.exe -Command Remove-Item c:/Jenkins - Recurse
