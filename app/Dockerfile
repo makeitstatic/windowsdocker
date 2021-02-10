@@ -30,13 +30,13 @@ RUN choco install adobereader
 RUN choco install vscode
  
 # Install IIS in powershell fashion, advantage of windows container
-RUN Powershell.exe -Command Install-WindowsFeature Web-Server
+RUN -Command Install-WindowsFeature Web-Server
 
 # Install Jenkins, msi installation silent install syntax
 RUN ["msiexec.exe", "/i", "C:\\Jenkins\\jenkins.msi", "/qn"]
 
 # Remove install files
-RUN Powershell.exe -Command Remove-Item c:/Jenkins - Recurse
+RUN -Command Remove-Item c:/Jenkins - Recurse
 
 # Compile Java class
 RUN javac c:\\Scripts\HelloWorld.java
