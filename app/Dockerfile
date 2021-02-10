@@ -1,35 +1,45 @@
 # Use MS Windows image
 FROM microsoft/windows
 
-# Create temp folder
-RUN New-Item -Path 'C:\\temp' -ItemType Directory
+# Create temp folders
+RUN New-Item -Path 'C:\\Scripts' -ItemType Directory
 
-# Copy required files to container
-COPY HelloWorld.java c:\\temp\HelloWorld.java
+RUN New-Item -Path 'C:\\Jenkins' -ItemType Directory
+
+# Fetch Jenkins Installation files, add also downloads
+ADD https://ftp.halifax.rwth-aachen.de/jenkins/windows-stable/2.263.3/jenkins.msi C:/Jenkins
+
+# Copy required demo files to container, copy only copies
+COPY Scripts\HelloWorld.java c:\\Scripts\HelloWorld.java
+
 # This is a script that installs chocolatey package manager without user prompt
-COPY ChocolateyInstallNonAdmin.ps1 c:\\temp\ChocolateyInstallNonAdmin.ps1
+COPY Scripts\ChocolateyInstallNonAdmin.ps1 c:\\Scripts\ChocolateyInstallNonAdmin.ps1
 
 RUN powershell.exe
 
 # Install Chocolatey
 RUN Set-ExecutionPolicy Bypass -Scope Process -Force;
 
-RUN c:\\temp\ChocolateyInstallNonAdmin.ps1
+RUN c:\\Scripts\ChocolateyInstallNonAdmin.ps1
 
 # Install Java with chocolatey manager
- RUN choco install jdk8 -y  
+RUN choco install jdk8 -y  
 
- RUN choco install adobereader
+RUN choco install adobereader
 
- RUN choco install googlechrome
+RUN choco install vscode
+ 
+# Install IIS in powershell fashion, advantage of windows container
+RUN Powershell.exe -Command Install-WindowsFeature Web-Server
 
- RUN choco install vscode
+# Install Jenkins, msi installation silent install syntax
+RUN ["c:/Jenkins/jenkins.msi", "/silent", "install"]
 
-
-RUN ["c:/installers/ChromeStandaloneSetup64.exe", "/silent", "/install"]
+# Remove install files
+RUN Powershell.exe -Command Remove-Item c:/Jenkins - Recurse
 
 # Compile Java class
-RUN javac c:\\temp\HelloWorld.java
+RUN javac c:\\Scripts\HelloWorld.java
 
 # Run Java script 
 ENTRYPOINT java HelloWorld
