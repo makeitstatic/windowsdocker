@@ -13,18 +13,20 @@ RUN powershell.exe
 
 # Install Chocolatey
 RUN Set-ExecutionPolicy Bypass -Scope Process -Force;
+
 RUN c:\\temp\ChocolateyInstallNonAdmin.ps1
 
 # Install Java with chocolatey manager
  RUN choco install jdk8 -y  
 
  RUN choco install adobereader
+
  RUN choco install googlechrome
+
  RUN choco install vscode
 
 
 RUN ["c:/installers/ChromeStandaloneSetup64.exe", "/silent", "/install"]
-
 
 # Compile Java class
 RUN javac c:\\temp\HelloWorld.java
